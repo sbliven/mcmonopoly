@@ -103,10 +103,10 @@ A = D*ND;
 
 
 %% Simulate the markov chain for a few steps
-steps = 20;
+steps = 50;
 fps = 10;
 
-xhist = zeros(size(A,1),steps+1);
+xhist = zeros(size(A,1),steps);
 x = eye(1,size(A,1));
 xhist(:,1) = x;
 
@@ -123,7 +123,7 @@ boardHist = makeBoard(xhist);
 %% Find steady state
 [V, l] = eigs(A',1,'lm');
 
-xss = V'/sum(V);
+xss = V'/sum(V); %x at steady state, eg t->infinity
 
 imshow(pToInt(makeBoard(xss')));
 

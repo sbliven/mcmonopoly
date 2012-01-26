@@ -1,6 +1,10 @@
 function [] = play(frames,fps)
 % Wrapper for implay, which is missing in octave
-if exist('implay') == 2,
+
+if nargin < 2,
+    fps = 5;
+end
+if exist('implay','file') > 0,
     implay(frames, fps);
 else,
     for frame = 1:size(frames,3),
