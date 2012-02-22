@@ -117,20 +117,72 @@ end
 
 boardHist = makeBoard(xhist);
 
-% Play a movie (matlab) or simple animation (octave) of the simulation
-%play(pToInt(boardHist),5);
-
 %% Find steady state
 [V, l] = eigs(A',1,'lm');
 
 xss = V'/sum(V); %x at steady state, eg t->infinity
 
+
+
+%% Plots
+
+return; % don't create plots
+
+%% Play a movie (matlab) or simple animation (octave) of the simulation
+play(pToInt(boardHist),5);
+
+%% Display steady state
+
 imshow(pToInt(makeBoard(xss')));
 
-plot(xss);
-line([1 40], [1 1]/40, 'color','red')
-
+%% Print a table of the top 10 squares
 [xss_sorted,xss_order ]= sort(xss,'descend');
-[ num2cell(xss_sorted(1:10)') squares(xss_order(1:10)) ]
+[ num2cell(1:20)' num2cell(xss_sorted(1:20)') squares(xss_order(1:20)) ]
+
+%% plot the steady state probability and label the 10 most extreme peaks
+plot(xss);
+line([1 40], [1 1]/40, 'color','red');
+xlabel('Square','fontname','Vera','fontsize',14);
+ylabel('Probability','fontname','Vera','fontsize',14);
+lim = ylim();
+ylim([0,lim(2)]);
+text(xss_order([1:5 end-4:end]),xss_sorted([1:5 end-4:end]), ...
+    squares(xss_order([1:5 end-4:end])), ...
+    'fontname','Vera','fontsize',14);
 
 
+
+%% Plot some individual squares through the game
+lineStyleOrder = get(0,'DefaultAxesLineStyleOrder');
+set(0,'DefaultAxesLineStyleOrder','-|-*|-s|-o|--|--*|--s|--o');
+plottedSquares = 1:40;%[xss_order(1:10) 12];
+plot(xhist(plottedSquares,:)');
+xlim([0 20]);
+ylim([0 .15]);
+legend(squares{plottedSquares});
+set(0,'DefaultAxesLineStyleOrder',lineStyleOrder)
+
+%% Early-game advantage
+% Since the game does not start at steady state, some squares will be
+% landed on more often in the early game than would be expected from their
+% steady state distribution.
+%
+% For a given turn and square, define the advantage to be the ratio of
+% expected number of times someone has landed on that square starting at
+% GO! at time 1 vs starting at steady state.
+advantage = zeros(size(xhist));
+for i=1:size(xhist,2),
+    advantage(:,i) = sum(xhist(:,1:i),2)./xss'/i;
+end
+%sort based on order at turn 10
+[advantage_sorted, advantage_order] = sort(advantage(:,10),'descend');
+
+lineStyleOrder = get(0,'DefaultAxesLineStyleOrder');
+set(0,'DefaultAxesLineStyleOrder','-|-*|-s|-o|--|--*|--s|--o');
+plottedSquares = [advantage_order([1:5 end-5:end])' 12 24 25];
+plottedSquares = 1:40;
+plot(advantage(plottedSquares,:)');
+xlim([0 20]);
+ylim([0 4]);
+legend(squares{plottedSquares});
+set(0,'DefaultAxesLineStyleOrder',lineStyleOrder)

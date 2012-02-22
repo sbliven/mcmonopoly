@@ -12,5 +12,9 @@ frames(end:-1:2,1,:) = x(n+1:2*n,:);
 frames(1,1:end-1,:) = x(2*n+1:3*n,:);
 frames(1:end-1,end,:) = x(3*n+1:end,:);
 
+% Add a white border
+border = ones(n+3,n+3,steps);
+border(2:end-1,2:end-1,:) = frames;
+frames = border;
 end
 

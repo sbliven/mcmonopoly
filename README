@@ -1,0 +1,12 @@
+Code to calculate steady-state monopoly probabilities.
+
+To run, navigate to this directory in Matlab or Octave and execute
+
+  run MCMonopoly
+
+to build the model and create some graphs. You may want to make graphs
+one-at-a-time, taking advantage of the cells (separated by %% comments).
+
+See http://acsweb.ucsd.edu/~sbliven/2012/02/the-statistics-of-monopoly/ for an
+explaination of the code.
+(c) Spencer Bliven 2012
